@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "address": "testtng",
+        "company": "Cadient",
+        "dob": "12-nov-1992",
+        "email": "abc@gmail.com",
+        "firstname": "vakul",
+        "lastname": "saxena",
+        "password": "Qwerty@123"
+    },
+    {
+        "id": 2,
+        "address": "testtng",
+        "company": "Cadient",
+        "dob": "12-nov-1992",
+        "email": "abdd@gmail.com",
+        "firstname": "vandana",
+        "lastname": "satyawali",
+        "password": "Qwerty@123"
+    }
+]

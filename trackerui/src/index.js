@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Globalpage from './Pages/Global.page'
 import 'semantic-ui-css/semantic.min.css'
 import {
     BrowserRouter as Router
@@ -14,9 +13,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
         <Provider store={store}>
-            <Globalpage>
                 <App />
-            </Globalpage>
         </Provider>
     </Router>
   </React.StrictMode>,

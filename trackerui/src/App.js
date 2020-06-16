@@ -9,19 +9,18 @@ import ProtectedRoute from './Components/ProtectedRoute.component'
 
 class App extends Component {
   render() {
+    const LoginWithBackground = Mainpage(Loginpage);
+    const SignupWithBackground = Mainpage(Signuppage);
     return (
       <React.Fragment>
         <ProtectedRoute exact path='/'>
           <Homepage/>
         </ProtectedRoute>
         <Route path='/Authenticate'>
-          <Mainpage/>
-        </Route>
-        <Route path='/Login'>
-          <Loginpage />
+          <LoginWithBackground/>
         </Route>
         <Route path='/Signup'>
-          <Signuppage/>
+          <SignupWithBackground/>
         </Route>
         <ProtectedRoute path='/Homepage'>
           <Homepage />

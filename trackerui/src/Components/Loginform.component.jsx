@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import {Link} from 'react-router-dom'
 import { connect } from "react-redux";
-import {fetchManager} from '../Actions/managerActions'
+import {fetchUser} from '../Actions/userActions'
 
 class LoginForm extends Component {
     constructor(props){
@@ -25,7 +25,7 @@ class LoginForm extends Component {
                 password: this.state.password
             }
             
-            this.props.fetchManager(data)
+            this.props.fetchUser(data)
         }
                
         
@@ -77,14 +77,14 @@ class LoginForm extends Component {
                     </Button>
                 </Form>
                 <br/>
-                <p> Not Registered ? <Link to="/Signup">Sign Up</Link> Here </p>
+                <p style={{fontSize: 'small'}}> Not Registered ? <Link to="/Signup">Register an account</Link> with us</p>
             </React.Fragment>
         )
   }
 }
 
 const mapStateToProps = state => ({
-    manager: state.manager.manager
+    user: state.users.user
 })
 
-export default connect(mapStateToProps, { fetchManager })(LoginForm)
+export default connect(mapStateToProps, { fetchUser })(LoginForm)

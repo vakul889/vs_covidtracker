@@ -1,10 +1,10 @@
 import {combineReducers } from 'redux';
-import employeeReducer from '../Reducers/employeeReducer'
-import managerReducer from '../Reducers/managerReducer' 
+import userReducer from '../Reducers/userReducer';
+import trackerDataReducer from '../Reducers/trackerDataReducer'; 
 
 const rootReducer = combineReducers({
-    employees: employeeReducer,
-    manager: managerReducer
+    users: userReducer,
+    trackerData: trackerDataReducer
   });
 
 export default rootReducer;

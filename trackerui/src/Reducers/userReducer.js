@@ -1,25 +1,25 @@
 //evaluate any actions that are commited
-import {FETCH_MANAGER, CREATE_MANAGER} from '../Actions/types';
+import {FETCH_USER, CREATE_USER} from '../Actions/types';
 
 const initialState = {
-    manager: {}
+    user: {}
 }
 
 export default function(state = initialState, action){
     switch (action.type) {
-        case FETCH_MANAGER:
+        case FETCH_USER:
             console.log("reducer")
             console.log(action.payload)
             return{
                 ...state,
-                manager: action.payload
+                user: action.payload
             }
-        case CREATE_MANAGER:
+        case CREATE_USER:
             console.log("reducer")
             console.log(action.payload)
             return{
                 ...state,
-                manager: action.payload
+                user: action.payload
             }
         default:
             return state;

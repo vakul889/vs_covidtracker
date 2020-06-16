@@ -1,12 +1,17 @@
 .login-box{
     width: 30%;
-    height: 80%;
-    filter: none;
+    height: 85%;    
+    z-index: 5;
+    position: relative;
+    filter: drop-shadow(2px 4px 6px black);
 }
 
 .signup-box{
-    width: 60%;
-    filter: none;
+    width: 30%;
+    height: 85%;    
+    z-index: 5;
+    position: relative;
+    filter: drop-shadow(2px 4px 6px black);
 }
 
 .round{
@@ -14,5 +19,12 @@
 }
 
 .login-box-background{
-    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background-color: beige;
+}
+.login-page-background{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    right: 5%;  
 }

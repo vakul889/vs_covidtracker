@@ -1,10 +1,6 @@
-//Employee Actions
-export const FETCH_ALL_EMPLOYEES = "FETCH_EMPLOYEES"
-export const FETCH_EMPLOYEE = "FETCH_EMPLOYEE"
-export const CREATE_EMPLOYEE = "CREATE_EMPLOYEE"
-export const EDIT_EMPLOYEE = "EDIT_EMPLOYEE"
-export const DELETE_EMPLOYEE = "DELETE_EMPLOYEE"
+//User Actions
+export const FETCH_USER = "FETCH_USER"
+export const CREATE_USER = "CREATE_USER"
 
-//Manager Actions
-export const FETCH_MANAGER = "FETCH_MANAGER"
-export const CREATE_MANAGER = "CREATE_MANAGER"
+//Data Actions
+export const FETCH_TRCKER_DATA = "FETCH_TRACKER_DATA"

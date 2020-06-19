@@ -22,7 +22,7 @@ class App extends Component {
         <Route path='/Signup'>
           <SignupWithBackground/>
         </Route>
-        <ProtectedRoute path='/Homepage'>
+        <ProtectedRoute path='/CovidTracker'>
           <Homepage />
         </ProtectedRoute>
       </React.Fragment>

@@ -1,29 +1,25 @@
-import React, { Component } from 'react'
-import { Segment, Header, Button } from 'semantic-ui-react'
-import Pagetitle from '../Components/Page.title.component'
-import EmployeeCardsList from '../Components/Employee.Cards.List.component'
+import React from 'react'
+import TrackerDataState from '../Components/TrackerData.State.List.component'
 import Globalpage from './Global.page'
+import TrackerDataCity from '../Components/TrackerData.City.List.component'
+import TrackerDataAll from '../Components/TrackerData.All.List.component'
+import { Route, useRouteMatch } from 'react-router-dom'
 
-export default class Homepage extends Component {
-  signout = () => {
-    localStorage.removeItem("username")
-  }
-  render() {
+export default function Homepage(){
+    let { path } = useRouteMatch();
     return (
       <Globalpage>
-        <div className="center-align">
-          <div style={{position: 'absolute', right: 0}}>
-            <a href="/Authenticate" onClick={()=> this.signout()}><Button>Signout</Button></a>
-          </div>
-          <Pagetitle/>
-          <Segment color="blue" inverted size="tiny">
-            <Header as="h3" >
-              Manage Employee List
-            </Header>
-          </Segment>
-          <EmployeeCardsList/>
-        </div>
+              <Route exact path={path}>
+                <TrackerDataAll/>
+                <TrackerDataState fromHome='true'/>
+                <TrackerDataCity fromHome='true'/>
+              </Route>
+              <Route exact path={path+"/ByState"}>
+                <TrackerDataState/>
+              </Route>
+              <Route exact path={path+"/ByCity"}>
+                <TrackerDataCity/>
+              </Route>
       </Globalpage>
     )
-  }
 }

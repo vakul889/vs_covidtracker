@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import banner from '../login-screen-banner.png';
+import Pagefooter from '../Components/Page.footer.component';
 
 const backgroundStyle ={
   position: 'absolute',
@@ -16,10 +17,11 @@ export default function Mainpage(WrappedComponent){
   return function main() {
       return(
         <div>
-            <img src={banner} style={backgroundStyle}/>
+            <img src={banner} style={backgroundStyle} alt="background"/>
             <div className="login-page-background" style={pageSize}>
                 <WrappedComponent/>
             </div>
+            <Pagefooter/>
         </div>
       )
   }

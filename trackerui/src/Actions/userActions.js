@@ -1,4 +1,4 @@
-import {FETCH_USER, CREATE_USER, FETCH_TRCKER_DATA} from './types';
+import {FETCH_USER, CREATE_USER} from './types';
 
 export const fetchUser = data => dispatch => {
             console.log("fetching")
@@ -20,8 +20,9 @@ export const fetchUser = data => dispatch => {
                                 payload: usr
                             })
                             localStorage.setItem("username", usr.firstname)
-                            window.location.href = "/homepage";
-                        }   
+                            window.location.href = "/CovidTracker";
+                        }
+                        return found;
                     })
             if(found===false){
                 alert("User not found");
@@ -35,14 +36,5 @@ export const addUser = data => dispatch => {
             type: CREATE_USER,
             payload: data
         })
-        window.location.href = "/homepage";
-}
-
-export const fetchTrackerData = data => dispatch => {
-    alert("Tracker data")
-    console.log(data)
-        dispatch({
-            type: FETCH_TRCKER_DATA,
-            payload: data
-        })
+        window.location.href = "/CovidTracker";
 }

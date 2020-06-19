@@ -3,3 +3,9 @@
   color: azure; 
   position: relative;
 }
+
+.home-background {
+  background-image: url('./login-screen-banner-blurred.png');
+  background-attachment: fixed;
+  background-position: center;
+}

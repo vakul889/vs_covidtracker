@@ -36,7 +36,7 @@ class SignupForm extends Component {
             this.setState({error:{
                 lastname: "Last Name should be less that 30 characters"
             }});
-        } else if(this.state.email.indexOf("@") == -1 || this.state.email.indexOf(".") == -1){
+        } else if(this.state.email.indexOf("@") === -1 || this.state.email.indexOf(".") === -1){
             this.setState({error:{
                 email: "Email Address is not valid"
             }});
@@ -104,7 +104,7 @@ class SignupForm extends Component {
                 />
                 <br/>
                 <Button primary>Submit</Button>
-                <p style={{fontSize: 'small'}}> Already Registered ? <Link to={{pathname: "./Homepage"}}>Login</Link> Here </p>
+                <p style={{fontSize: 'small'}}> Already Registered ? <Link to={{pathname: "./CovidTracker"}}>Login</Link> Here </p>
             </Form>
             </React.Fragment>
         )

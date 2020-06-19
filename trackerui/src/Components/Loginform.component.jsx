@@ -19,7 +19,7 @@ class LoginForm extends Component {
     }
     handleSubmit = (e) => {
         e.preventDefault();
-        if(this.state.email != ''){
+        if(this.state.email !== ''){
             const data = {
                 email: this.state.email,
                 password: this.state.password

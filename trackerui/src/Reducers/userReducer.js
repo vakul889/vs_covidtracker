@@ -8,15 +8,15 @@ const initialState = {
 export default function(state = initialState, action){
     switch (action.type) {
         case FETCH_USER:
-            console.log("reducer")
-            console.log(action.payload)
+            // console.log("reducer")
+            // console.log(action.payload)
             return{
                 ...state,
                 user: action.payload
             }
         case CREATE_USER:
-            console.log("reducer")
-            console.log(action.payload)
+            // console.log("Create user reducer")
+            // console.log(action.payload)
             return{
                 ...state,
                 user: action.payload

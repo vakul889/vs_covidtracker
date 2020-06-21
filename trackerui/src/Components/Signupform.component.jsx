@@ -50,7 +50,7 @@ class SignupForm extends Component {
             this.props.addUser(data)
         }
     }
-
+    
     render() {
         return (
             <React.Fragment>
@@ -112,7 +112,7 @@ class SignupForm extends Component {
 }
 
 const mapStateToProps = state => ({
-    user: state.users.user
+        result: state.users.user
 })
-
+  
 export default connect(mapStateToProps, { addUser })(SignupForm)

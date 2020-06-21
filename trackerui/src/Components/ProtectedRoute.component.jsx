@@ -6,7 +6,7 @@ import {
 
 
 export default function ProtectedRoute({children, ...props}) {
-    let isAuthenticated = localStorage.getItem("username") != null  ? true : false; 
+    let isAuthenticated = localStorage.getItem("username")? true: false;
   return (
     <Route
         {...props}

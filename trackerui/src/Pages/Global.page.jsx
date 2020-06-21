@@ -15,7 +15,8 @@ import Pagetitle from '../Components/Page.title.component';
 import Pagefooter from '../Components/Page.footer.component';
 
 const signout = () => {
-  alert("Signed out")
+  window.localStorage.setItem("severity","success");
+  window.localStorage.setItem("message","Signed out successfully");
   localStorage.removeItem("username")
 }
 export default function Globalpage({children,...props}) {

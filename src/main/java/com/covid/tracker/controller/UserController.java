@@ -29,7 +29,7 @@ public class UserController {
 	private UserRepository userRepository;
 	
 	//Add a new user
-	@PostMapping("/user")
+	@PostMapping("/api/user")
 	public ResponseEntity<String> create(@RequestBody User user){
 		String response = "";
 		HttpHeaders headers = new HttpHeaders(); 
@@ -49,7 +49,7 @@ public class UserController {
 	}
 	
 	//validate user details
-	@PostMapping("/validate")
+	@PostMapping("/api/validate")
 	public ResponseEntity<String> validate(@RequestBody User user){
 		String response = "";
 		HttpHeaders headers = new HttpHeaders(); 

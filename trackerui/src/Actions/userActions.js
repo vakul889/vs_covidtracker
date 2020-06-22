@@ -14,7 +14,7 @@ export const fetchUser = data => dispatch => {
         body: raw,
         redirect: 'follow'
         };
-        fetch("http://localhost:8080/validate", requestOptions)
+        fetch("http://localhost:8080/api/validate", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if(result.result ==="SUCCESS"){
@@ -66,7 +66,7 @@ export const addUser = data => dispatch => {
         body: raw,
         redirect: 'follow'
         };
-        fetch("http://localhost:8080/user", requestOptions)
+        fetch("http://localhost:8080/api/user", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if(result.result ==="USER ADDED"){
@@ -80,7 +80,13 @@ export const addUser = data => dispatch => {
                     window.localStorage.setItem("severity",finalresult.severity);
                     window.localStorage.setItem("message",finalresult.message);
                 })
-                .catch(error => console.log('error', error));
+                .catch(error => { 
+                    finalresult.severity = "error";
+                    finalresult.message = "Server connection error.Please Try Again Later."
+                    window.localStorage.setItem("severity",finalresult.severity);
+                    window.localStorage.setItem("message",finalresult.message);
+                    console.log('error', error)
+                });
             dispatch({
                 type: CREATE_USER,
                 payload: finalresult

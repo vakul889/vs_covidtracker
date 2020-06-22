@@ -30,13 +30,16 @@ class TrackerDataAll extends Component {
         var sortedstatelist = [];
         if( trackerstatedata!== null && trackerstatedata  !== undefined) {
             sorteddata = trackerstatedata.sort((a,b)=>{
-                return a.confirmed > b.confirmed
+                return a.confirmed < b.confirmed
             })
-            for (var i = 0; i < 5; i++) {
-                if(sorteddata[i] !== null && sorteddata[i] !== undefined){
-                    sortedstatelist[i] = sorteddata[i];
-                }
-            }
+            // for (var i = 0; i < 5; i++) {
+            //     if(sorteddata[i] !== null && sorteddata[i] !== undefined){
+            //         sortedstatelist[i] = sorteddata[i];
+            //     }
+            // }
+            sortedstatelist = sorteddata.filter((value,index)=>{
+                return index < 5
+            })
         }
         console.log(sortedstatelist)
         return sortedstatelist;

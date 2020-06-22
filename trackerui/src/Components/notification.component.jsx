@@ -40,7 +40,7 @@ export default class Notification extends React.PureComponent {
                 window.localStorage.removeItem("severity");
                 window.localStorage.removeItem("message")
                 if(redirect !==null){
-                    setTimeout(()=>{window.location.href = redirect},3000)
+                    setTimeout(()=>{window.location.href = redirect},4000)
                 }
                 window.localStorage.removeItem("redirect")
             }

@@ -14,7 +14,7 @@ export const fetchUser = data => dispatch => {
         body: raw,
         redirect: 'follow'
         };
-        fetch("http://localhost:8080/api/validate", requestOptions)
+        fetch(process.env.REACT_APP_API_HOST+"/api/validate", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if(result.result ==="SUCCESS"){
@@ -66,7 +66,7 @@ export const addUser = data => dispatch => {
         body: raw,
         redirect: 'follow'
         };
-        fetch("http://localhost:8080/api/user", requestOptions)
+        fetch(process.env.REACT_APP_API_HOST+"/api/user", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if(result.result ==="USER ADDED"){

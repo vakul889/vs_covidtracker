@@ -1,0 +1,22 @@
+Trackerui folder contains the react frontend code.
+
+browse the folder and we can use :
+	- npm install
+	- npm start
+	- npm run build
+
+For backend APIs
+Browse to main project folder and run :
+	- mvn spring-boot:run
+
+
+To create a single jar file to be run on production
+	- mvn clean install
+	
+
+To run the jar file 
+
+	- java -jar target/tracker-0.0.1-SNAPSHOT.jar
+
+
+

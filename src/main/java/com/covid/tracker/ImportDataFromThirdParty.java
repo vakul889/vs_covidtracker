@@ -1,181 +1,196 @@
 package com.covid.tracker;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.Collections;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 
-import javax.net.ssl.SSLContext;
-
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethodBase;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-@PropertySource("classpath:application.properties")
-public class ImportDataFromThirdParty implements Runnable{
-    private static final String BASE_URL = "https://api.covidindiatracker.com/";
-    private static final String API_ENDPOINT = "state_data.json";
-    private static final int CONNECTIONTIMEOUT = 50000;
-    
-    @Value("${trust.store}")
-    private Resource trustStore;
+import com.covid.tracker.mapper.CityDataMapper;
+import com.covid.tracker.mapper.CountryDataMapper;
+import com.covid.tracker.mapper.StateDataMapper;
+import com.covid.tracker.model.CityData;
+import com.covid.tracker.model.CountryData;
+import com.covid.tracker.model.StateData;
+import com.covid.tracker.repository.CityRepository;
+import com.covid.tracker.repository.CountryRepository;
+import com.covid.tracker.repository.StateRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
-    @Value("${trust.store.password}")
-    private String trustStorePassword;
-   
-//    HttpClient httpClient = new OkHttpClient();
-//    		newBuilder()
-//    		.connectTimeout(50, TimeUnit.SECONDS)
-//            .readTimeout(60, TimeUnit.SECONDS)
-//            .build();
-    public RestTemplate restTemplate() throws Exception {
-        SSLContext sslContext = new SSLContextBuilder()
-        		.loadTrustMaterial(trustStore.getURL(), trustStorePassword.toCharArray())
-        		.build();
-        SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext);
-        CloseableHttpClient httpClient = HttpClients.custom()
-            .setSSLSocketFactory(socketFactory)
-            .build();
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        return new RestTemplate(factory);
-    }
+
+@PropertySource("classpath:application.properties")
+@Component
+public class ImportDataFromThirdParty{
+    private static final String COUNTRY_API_URL = "https://api.covidindiatracker.com/state_data.json";
+//    private static final String COUNTRY_API_URL = "http://localhost:8080/api/countrydata";
+    private static final String STATE_API_URL = "https://api.covidindiatracker.com/total.json";
+//    private static final String STATE_API_URL = "http://localhost:8080/api/statedata";
+    private static final String CITY_API_URL = "https://api.covid19india.org/v2/state_district_wise.json";
+//    private static final String CITY_API_URL = "http://localhost:8080/api/citydata";
+    private static final Logger logger = LoggerFactory.getLogger(TrackerApplication.class);
     
-    public String getData() throws RestClientException, Exception {
-//    	KeyStore keystore = KeyStore.getInstance("PKCS12");
-//    	FileInputStream instream = new FileInputStream(new File("tracker-project.p12"));
-//    	try {
-//            keystore.load(instream, "password".toCharArray());
-//        } catch (NoSuchAlgorithmException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (CertificateException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} finally {
-//            instream.close();
-//        }
-    	String jsonString = "";
-    	ResponseEntity<String> response = restTemplate().getForEntity(BASE_URL+API_ENDPOINT, String.class, Collections.emptyMap());
-    	if(org.springframework.http.HttpStatus.OK == response.getStatusCode()) {
-    		jsonString = response.getBody();
-    	}
-    	
-    	System.out.println(jsonString);
+    @Autowired
+    RestTemplate restTemplate;
+    @Autowired
+	private CountryRepository countryRepository;
+    @Autowired
+	private StateRepository stateRepository;
+    @Autowired
+	private CityRepository cityRepository;
+    
+    
         
-//    	HttpMethodBase method = new GetMethod();
-//		try {
-//			HttpClient client = new HttpClient();
-//			client.getHttpConnectionManager().getParams().setConnectionTimeout(CONNECTIONTIMEOUT);
-//			URL url = new URL(BASE_URL+API_ENDPOINT);
-//			HostConfiguration hostConfig = new HostConfiguration();
-//			hostConfig.setHost(url.getHost(), url.getPort(), url.getProtocol());
-//
-//			method = new GetMethod(BASE_URL+API_ENDPOINT);
-//			method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, true));
-//			method.addRequestHeader("Accept", "*/*");
-//			int statusCode = client.executeMethod(hostConfig, method);
-//
-//			if (statusCode != HttpStatus.SC_OK) {
-//				throw new Exception("Error sending api request");
-//			} else {
-//				byte[] responseBody = method.getResponseBody();
-//				if (responseBody != null) {
-//					jsonString = new String(responseBody, "UTF-8");
-//				}
-//				return jsonString;
-//			}
-//		}catch (HttpException e) {
-//			e.printStackTrace();
-//		} catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		} catch (SocketTimeoutException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			method.releaseConnection();
-//		}
-		return "";
-////    	httpClient.setConnectTimeout(50, TimeUnit.SECONDS);
-////    	httpClient.setReadTimeout(60, TimeUnit.SECONDS);
-//    	System.out.println("getting data");
-//    	
-//    	String bodyStr = "";    	
-//    	Request request = new Request.Builder()
-//    						.url(BASE_URL + API_ENDPOINT)
-//    						.method("GET", null)
-//    						.addHeader("Accept", "*/*")
-//    						.build();
-//        try {
-//        	Response response = httpClient.newCall(request).execute();
-//        	if (!response.isSuccessful()) { 
-//                int statusCode = response.code();
-//                if(HttpStatus.OK.value() == statusCode) {
-//	                ResponseBody body = response.body();
-//	                bodyStr = body.string();
-//                }
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return bodyStr;
+    public String getData() throws RestClientException, Exception {
+    	 HttpHeaders headers = new HttpHeaders();
+         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+         HttpEntity <String> entity = new HttpEntity<String>(headers);
+         
+         String countryString = restTemplate.exchange(COUNTRY_API_URL, 
+      		   HttpMethod.GET, entity, String.class).getBody();
+         String stateString = restTemplate.exchange(STATE_API_URL, 
+        		   HttpMethod.GET, entity, String.class).getBody();
+         String cityString = restTemplate.exchange(CITY_API_URL, 
+      		   HttpMethod.GET, entity, String.class).getBody();
+         
+         logger.info("************************Fetch data from API***************************");
+         logger.info("Country data recieved successfully : " + countryString);
+         logger.info("State data recieved successfully : " + stateString.substring(0, 1000));
+         logger.info("City data recieved successfully : " + cityString.substring(0, 1000));
+         logger.info("**********************************************************************");
+         
+         ObjectMapper mapper = new ObjectMapper();
+         JsonNode countryNode = (JsonNode) mapper.readTree(countryString);
+ 		 ArrayNode stateArrayNode = (ArrayNode) mapper.readTree(stateString);
+ 		 ArrayNode cityArrayNode = (ArrayNode) mapper.readTree(cityString);
+
+ 		 CountryDataMapper newCountryNode = mapper.treeToValue(countryNode, CountryDataMapper.class);
+ 		 
+ 		 List<StateDataMapper> stateList = new ArrayList<StateDataMapper>();
+ 		 List<CityDataMapper> cityList = new ArrayList<CityDataMapper>();
+ 		 for (JsonNode jsonNode : stateArrayNode) {
+			StateDataMapper newJsonNode = mapper.treeToValue(jsonNode, StateDataMapper.class);
+			stateList.add(newJsonNode);
+ 		 }	
+ 		 for (JsonNode jsonNode : cityArrayNode) {
+			CityDataMapper newJsonNode = mapper.treeToValue(jsonNode, CityDataMapper.class);
+			cityList.add(newJsonNode);
+ 		 }
+ 		 
+ 		 logger.info("****************************SAVE Data to DB***********************");
+ 		 Boolean countrySave = SaveCountryData(newCountryNode);
+ 		 logger.info("Country Data saved : "+countrySave);
+ 		 Boolean stateSave = SaveStateData(stateList);
+ 		 logger.info("State Data saved : "+stateSave);
+ 		 Boolean citySave = SaveCityData(cityList);
+ 		 logger.info("City Data saved : "+citySave);
+         
+         Date date = new Date();
+         return "ImportDataFromThirdParty ran at: " + date.toString(); 
     }
     
-	 @Override
-	 public void run() {
-	     try {
-	         System.out.println(this.getData());
-	     } catch (IOException e) {
-	         e.printStackTrace();
-	     } catch (RestClientException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    private Boolean SaveCityData(List<CityDataMapper> cityList) {
+		List<CityData> objList = new ArrayList<CityData>();
+		for(CityDataMapper mapper : cityList) {
+			CityData cityData = new CityData();
+			cityData.setStatecode(mapper.getStateId().substring(mapper.getStateId().indexOf("-")+1));
+			for(LinkedHashMap<String, Object> data : mapper.getCityArray()) {
+				Iterator<String> iter = data.keySet().iterator();
+				while(iter.hasNext()) {
+					String key = iter.next();
+					Object value = data.get(key);
+					switch(key) {
+						case "district":
+							cityData.setName((String)value);
+							break;
+						case "active":
+							cityData.setActive(value+"");
+							break;
+						case "confirmed":
+							cityData.setConfirmed(value+"");
+							break;
+						case "deceased":
+							cityData.setDeaths(value+"");
+							break;
+						case "recovered":
+							cityData.setRecovered(value+"");
+							break;
+						case "delta" :
+							LinkedHashMap<String, Integer> deltaHashMap = (LinkedHashMap<String, Integer>) value;
+							cityData.setaChanges((deltaHashMap.get("confirmed") - (deltaHashMap.get("deceased") + deltaHashMap.get("recovered")))+"");
+							cityData.setcChanges(deltaHashMap.get("confirmed") + "");
+							cityData.setrChanges(deltaHashMap.get("deceased") + "");
+							cityData.setdChanges(deltaHashMap.get("recovered") + "");
+						default: break;
+					}
+				}
+			}
+			objList.add(cityData);
 		}
-	 }
+		cityRepository.saveAll(objList);
+		return true;
+	}
+
+	private Boolean SaveStateData(List<StateDataMapper> stateList) {
+		List<StateData> objList = new ArrayList<StateData>();
+		for(StateDataMapper mapper : stateList) {
+			StateData stateData = new StateData();
+			stateData.setCountrycode("IN");
+			stateData.setStatecode(("IN-UNK".equalsIgnoreCase(mapper.getId()))?"UN":mapper.getId().substring(mapper.getId().indexOf("-")+1));
+			stateData.setName(mapper.getState());
+			stateData.setActive(mapper.getActive());
+			stateData.setConfirmed(mapper.getConfirmed());
+			stateData.setRecovered(mapper.getRecovered());
+			stateData.setDeaths(mapper.getDeaths());
+			stateData.setaChanges(mapper.getaChanges());
+			stateData.setcChanges(mapper.getcChanges());
+			stateData.setrChanges(mapper.getrChanges());
+			stateData.setdChanges(mapper.getdChanges());
+			objList.add(stateData);
+		}
+		stateRepository.saveAll(objList);
+		return true;
+	}
+
+	private Boolean SaveCountryData(CountryDataMapper newCountryNode) {
+		CountryData countryData = new CountryData();
+		countryData.setCountrycode("IN");
+		countryData.setActive(newCountryNode.getActive());
+		countryData.setConfirmed(newCountryNode.getConfirmed());
+		countryData.setRecovered(newCountryNode.getRecovered());
+		countryData.setDeaths(newCountryNode.getDeaths());
+		countryData.setaChanges(newCountryNode.getaChanges());
+		countryData.setcChanges(newCountryNode.getcChanges());
+		countryData.setrChanges(newCountryNode.getrChanges());
+		countryData.setdChanges(newCountryNode.getdChanges());
+		countryRepository.save(countryData);
+		return true;
+	}
+
+	//@Scheduled(cron = "0 45 3 1/1 * ?")
+	@Scheduled(cron = "0 0 11 1/1 * ?")
+    public void RunSchedular() throws RestClientException, Exception{
+    	this.getData();
+    }
 	
-	 public static void main(String[] args) throws RestClientException, Exception {
-		 ImportDataFromThirdParty currObject = new ImportDataFromThirdParty();
-//		 ScheduledExecutorService schedular = Executors.newScheduledThreadPool(1);
-//		 schedular.scheduleAtFixedRate(currObject, 0,10, TimeUnit.MINUTES);
-		 try {
-			 System.out.println(currObject.getData());
-	     } catch (IOException e) {
-	         e.printStackTrace();
-	     }
-		 
-	 }
 }

@@ -84,7 +84,7 @@ class TrackerDataAll extends Component {
                 </Grid.Column>
                 <Grid.Column width={4}>
                     <Segment>
-                        <Label as='a' color='orange' ribbon>National Rates</Label>
+                        <Label as='a' color='orange' ribbon>Percentages</Label>
                         <Segment textAlign="center" basic>
                             <Statistic color="green" size="tiny">
                                     <Statistic.Value>{this.handleRates(trackerdata.recovered,trackerdata.confirmed)}</Statistic.Value>

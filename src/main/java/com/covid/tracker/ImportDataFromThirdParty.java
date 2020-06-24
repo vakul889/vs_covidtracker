@@ -74,9 +74,9 @@ public class ImportDataFromThirdParty{
       		   HttpMethod.GET, entity, String.class).getBody();
          
          logger.info("************************Fetch data from API***************************");
-         logger.info("Country data recieved successfully : " + countryString);
-         logger.info("State data recieved successfully : " + stateString.substring(0, 1000));
-         logger.info("City data recieved successfully : " + cityString.substring(0, 1000));
+         logger.debug("Country data recieved successfully : " + countryString);
+         logger.debug("State data recieved successfully : " + stateString.substring(0, 1000));
+         logger.debug("City data recieved successfully : " + cityString.substring(0, 1000));
          logger.info("**********************************************************************");
          
          ObjectMapper mapper = new ObjectMapper();

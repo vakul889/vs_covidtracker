@@ -42,8 +42,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 @PropertySource("classpath:application.properties")
 @Component
 public class ImportDataFromThirdParty{
-    private static final String COUNTRY_API_URL = "https://api.covidindiatracker.com/state_data.json";
-    private static final String STATE_API_URL = "https://api.covidindiatracker.com/total.json";
+    private static final String COUNTRY_API_URL = "https://api.covidindiatracker.com/total.json";
+    private static final String STATE_API_URL = "https://api.covidindiatracker.com/state_data.json";
     private static final String CITY_API_URL = "https://api.covid19india.org/v2/state_district_wise.json";
 //	private static final String COUNTRY_API_URL = "http://localhost:8080/api/countrydata";
 //    private static final String STATE_API_URL = "http://localhost:8080/api/statedata";

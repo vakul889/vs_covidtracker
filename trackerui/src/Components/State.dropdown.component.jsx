@@ -3,15 +3,15 @@ import { Dropdown } from 'semantic-ui-react';
 
 export default function StateDropdown({...props}) {
     const options = props.states.sort((a,b)=>{
-            var x = a.state.toLowerCase();
-            var y = b.state.toLowerCase();
+            var x = a.name.toLowerCase();
+            var y = b.name.toLowerCase();
             if (x < y) {return -1;}
             if (x > y) {return 1;}
             return 0;
         }).map((state) => ({
-        key: state.id,
-        text: state.state,
-        value: state.state,
+        key: state.statecode,
+        text: state.name,
+        value: state.name,
     }))
   return (
     <>

@@ -22,9 +22,9 @@ class TrackerDataState extends Component {
         if (column !== clickedColumn) {
             sortDir = 'ascending';
             sortedData = this.props.trackerstatedata.sort((a,b) => {
-                if(clickedColumn ==="state"){
-                    x = a.state.toLowerCase();
-                    y = b.state.toLowerCase();
+                if(clickedColumn ==="name"){
+                    x = a.name.toLowerCase();
+                    y = b.name.toLowerCase();
                     if (x < y) {return -1;}
                     if (x > y) {return 1;}
                     return 0;
@@ -37,8 +37,8 @@ class TrackerDataState extends Component {
             sortedData = this.props.trackerstatedata.sort((a,b) => {
                 if(sortDir === 'ascending') {
                     if(clickedColumn ==="state"){
-                        x = a.state.toLowerCase();
-                        y = b.state.toLowerCase();
+                        x = a.name.toLowerCase();
+                        y = b.name.toLowerCase();
                         if (x < y) {return -1;}
                         if (x > y) {return 1;}
                         return 0;
@@ -47,8 +47,8 @@ class TrackerDataState extends Component {
                     }
                 }else{
                     if(clickedColumn ==="state"){
-                        x = a.state.toLowerCase();
-                        y = b.state.toLowerCase();
+                        x = a.name.toLowerCase();
+                        y = b.name.toLowerCase();
                         if (x > y) {return -1;}
                         if (x < y) {return 1;}
                         return 0;
@@ -95,8 +95,8 @@ class TrackerDataState extends Component {
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell
-                                sorted={column === 'state' ? direction : null}
-                                onClick={this.handleSort('state')}
+                                sorted={column === 'name' ? direction : null}
+                                onClick={this.handleSort('name')}
                                 >
                                 State
                                 </Table.HeaderCell>
@@ -127,9 +127,9 @@ class TrackerDataState extends Component {
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {_.map(maindata, ({id,state,confirmed,active,recovered,deaths }) => (
-                                <Table.Row key={id}>
-                                    <Table.Cell>{state}</Table.Cell>
+                            {_.map(maindata, ({statecode,name,confirmed,active,recovered,deaths }) => (
+                                <Table.Row key={statecode}>
+                                    <Table.Cell>{name}</Table.Cell>
                                     <Table.Cell>{confirmed}</Table.Cell>
                                     <Table.Cell>{active}</Table.Cell>
                                     <Table.Cell>{recovered}</Table.Cell>

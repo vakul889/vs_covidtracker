@@ -13,10 +13,21 @@ class TrackerDataCity extends Component {
         column: null,
         data: [],
         direction: null,
-        selectedState: "Uttar Pradesh"
+        selectedState: (window.localStorage.getItem("SelectedStateId")!==null)?window.localStorage.getItem("SelectedStateId") : "UP",
+        selectedStateName : (window.localStorage.getItem("SelectedStateName")!==null)?window.localStorage.getItem("SelectedStateName") : "Uttar Pradesh"
     }
-    handleStateChange = (e, { value }) => this.setState({ selectedState: value })
-
+    handleStateChange = (e, { value }) => {
+        var selected = this.props.trackerstatedata.filter((val) => {
+            return value === val.name
+        })
+        window.localStorage.setItem("SelectedStateId",selected[0].statecode)
+        window.localStorage.setItem("SelectedStateName",selected[0].name)
+        this.setState({ selectedState: selected[0].statecode, 
+                        selectedStateName: selected[0].name, 
+                        data: this.props.trackerstatecitydata,
+                        column: null, direction: null
+                     })
+    }
     handleSort = (clickedColumn) => () => {
         if(this.props.fromHome) return;
         const { column, direction } = this.state
@@ -25,12 +36,12 @@ class TrackerDataCity extends Component {
         if (column !== clickedColumn) {
             sortDir = 'ascending';
             sortedData = this.props.trackerstatecitydata.filter((value)=>{
-                return value.state === this.state.selectedState
+                return value.statecode === this.state.selectedState
                 });
-            sortedData = sortedData[0].districtData.sort((a,b) => {
-                if(clickedColumn ==="id"){
-                    x = a.id.toLowerCase();
-                    y = b.id.toLowerCase();
+            sortedData = sortedData.sort((a,b) => {
+                if(clickedColumn ==="name"){
+                    x = a.name.toLowerCase();
+                    y = b.name.toLowerCase();
                     if (x < y) {return -1;}
                     if (x > y) {return 1;}
                     return 0;
@@ -41,13 +52,13 @@ class TrackerDataCity extends Component {
         } else {
             sortDir = (direction === 'ascending') ? 'descending' : 'ascending'
             sortedData = this.props.trackerstatecitydata.filter((value)=>{
-                return value.state === this.state.selectedState
+                return value.statecode === this.state.selectedState
                 }); 
-            sortedData = sortedData[0].districtData.sort((a,b) => {
+            sortedData = sortedData.sort((a,b) => {
                 if(sortDir === 'ascending') {
-                    if(clickedColumn ==="id"){
-                        x = a.id.toLowerCase();
-                        y = b.id.toLowerCase();
+                    if(clickedColumn ==="name"){
+                        x = a.name.toLowerCase();
+                        y = b.name.toLowerCase();
                         if (x < y) {return -1;}
                         if (x > y) {return 1;}
                         return 0;
@@ -55,9 +66,9 @@ class TrackerDataCity extends Component {
                         return a[clickedColumn] - b[clickedColumn]
                     }
                 }else{
-                    if(clickedColumn ==="id"){
-                        x = a.id.toLowerCase();
-                        y = b.id.toLowerCase();
+                    if(clickedColumn ==="name"){
+                        x = a.name.toLowerCase();
+                        y = b.name.toLowerCase();
                         if (x > y) {return -1;}
                         if (x < y) {return 1;}
                         return 0;
@@ -82,18 +93,19 @@ class TrackerDataCity extends Component {
         const { trackerstatedata,trackerstatecitydata, fromHome } = this.props;
         const { column, data, direction } = this.state;
         var states = trackerstatedata.filter((value)=> {
-            return {id: value.id, state: value.state}
+            return {id: value.statecode, state: value.name}
         })
         let maindata, citydata;
         if(data.length === 0){
-            maindata = trackerstatecitydata.filter((value)=>{
-                return value.state === this.state.selectedState
+            citydata = trackerstatecitydata.filter((value)=>{
+                return value.statecode === this.state.selectedState
             });
         } else {
-            citydata = data
+            citydata = data.filter((value)=>{
+                return value.statecode === this.state.selectedState
+            });
         }
-        if(citydata===undefined && maindata[0]!== undefined){
-            citydata = maindata[0].districtData
+        if(citydata!== undefined){
             if(fromHome){
                 citydata = citydata.filter((value,index)=>{
                     return index < MAX_RECORDS;
@@ -108,15 +120,15 @@ class TrackerDataCity extends Component {
                         <Label as='a' color='blue' ribbon>City Wise Data</Label>
                         <StateDropdown 
                             states={states} 
-                            value={this.state.selectedState}
+                            value={this.state.selectedStateName}
                             handleStateChange={this.handleStateChange.bind(this)}
                         />
                         <Table sortable={!fromHome} celled fixed compact>
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell
-                                sorted={column === 'id' ? direction : null}
-                                onClick={this.handleSort('id')}
+                                sorted={column === 'name' ? direction : null}
+                                onClick={this.handleSort('name')}
                                 >
                                 City
                                 </Table.HeaderCell>
@@ -147,9 +159,9 @@ class TrackerDataCity extends Component {
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {_.map(citydata, ({id,confirmed,active,recovered,deaths }) => (
+                            {_.map(citydata, ({id,name,confirmed,active,recovered,deaths }) => (
                                 <Table.Row key={id}>
-                                    <Table.Cell>{id}</Table.Cell>
+                                    <Table.Cell>{name}</Table.Cell>
                                     <Table.Cell>{confirmed!=null?confirmed: "Data Not Available"}</Table.Cell>
                                     <Table.Cell>{active!=null ? active:"Data Not Available"}</Table.Cell>
                                     <Table.Cell>{recovered!=null ? recovered:"Data Not Available"}</Table.Cell>

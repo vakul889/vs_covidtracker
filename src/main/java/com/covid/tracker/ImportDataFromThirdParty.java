@@ -43,10 +43,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 @Component
 public class ImportDataFromThirdParty{
     private static final String COUNTRY_API_URL = "https://api.covidindiatracker.com/state_data.json";
-//    private static final String COUNTRY_API_URL = "http://localhost:8080/api/countrydata";
     private static final String STATE_API_URL = "https://api.covidindiatracker.com/total.json";
-//    private static final String STATE_API_URL = "http://localhost:8080/api/statedata";
     private static final String CITY_API_URL = "https://api.covid19india.org/v2/state_district_wise.json";
+//	private static final String COUNTRY_API_URL = "http://localhost:8080/api/countrydata";
+//    private static final String STATE_API_URL = "http://localhost:8080/api/statedata";
 //    private static final String CITY_API_URL = "http://localhost:8080/api/citydata";
     private static final Logger logger = LoggerFactory.getLogger(TrackerApplication.class);
     
@@ -112,9 +112,9 @@ public class ImportDataFromThirdParty{
     private Boolean SaveCityData(List<CityDataMapper> cityList) {
 		List<CityData> objList = new ArrayList<CityData>();
 		for(CityDataMapper mapper : cityList) {
-			CityData cityData = new CityData();
-			cityData.setStatecode(mapper.getStateId().substring(mapper.getStateId().indexOf("-")+1));
 			for(LinkedHashMap<String, Object> data : mapper.getCityArray()) {
+				CityData cityData = new CityData();
+				cityData.setStatecode(mapper.getStateId().substring(mapper.getStateId().indexOf("-")+1));
 				Iterator<String> iter = data.keySet().iterator();
 				while(iter.hasNext()) {
 					String key = iter.next();
@@ -144,8 +144,8 @@ public class ImportDataFromThirdParty{
 						default: break;
 					}
 				}
+				objList.add(cityData);
 			}
-			objList.add(cityData);
 		}
 		cityRepository.saveAll(objList);
 		return true;
@@ -187,8 +187,8 @@ public class ImportDataFromThirdParty{
 		return true;
 	}
 
-	//@Scheduled(cron = "0 45 3 1/1 * ?")
-	@Scheduled(cron = "0 0 11 1/1 * ?")
+	@Scheduled(fixedRate = 86400000)
+	//@Scheduled(cron = "0 0 11 1/1 * ?")
     public void RunSchedular() throws RestClientException, Exception{
     	this.getData();
     }

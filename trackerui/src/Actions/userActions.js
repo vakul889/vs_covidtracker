@@ -23,7 +23,7 @@ export const fetchUser = data => dispatch => {
                             finalresult.severity = "success";
                             finalresult.message = "You are now logging in. Please wait..."
                             window.localStorage.setItem("username",decodedString.split("|")[1]);
-                            window.localStorage.setItem("redirect","/CovidTracker");
+                            window.localStorage.setItem("redirect","/CovidTracker/");
                         } else {
                             finalresult.severity = "error";
                             finalresult.message = "Invalid Username/Credenials. User Not Found."

@@ -105,7 +105,7 @@ class TrackerDataState extends Component {
         return(
             <>
             <Grid style={{padding: '0 20px'}}>
-                <Grid.Row>
+                <Grid.Row stretched={filter!==null?true:false}>
                 <Grid.Column width={fromHome?16:12}>
                     <Segment>
                         <Label as='a' color='blue' ribbon>State Wise Data</Label>

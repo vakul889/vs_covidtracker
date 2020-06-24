@@ -71,8 +71,7 @@ export const addUser = data => dispatch => {
                 .then(result => {
                     if(result.result ==="USER ADDED"){
                         finalresult.severity = "success";
-                        finalresult.message = "Email Id "+data.email+" has been successfully added. Redirecting to Login..."
-                        window.localStorage.setItem("redirect","/CovidTracker");
+                        finalresult.message = "Email Id "+data.email+" has been successfully added. Proceed to Login..."
                     }else if(result.result ==="USER ALREADY EXISTS"){
                         finalresult.severity = "warning";
                         finalresult.message = "Email Id "+data.email+" is already registered."

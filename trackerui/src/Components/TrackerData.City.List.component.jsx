@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Grid, Segment, Label, Table, Container } from 'semantic-ui-react';
+import { Grid, Segment, Label, Table, Container, Statistic } from 'semantic-ui-react';
 import { connect } from "react-redux";
 import {fetchTrackerStateData, fetchTrackerStateCityData} from '../Actions/trackerActions';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import StateDropdown from './State.dropdown.component';
+import SearchState from './Search.state.component';
 
 const MAX_RECORDS = 7;
 
@@ -13,9 +14,17 @@ class TrackerDataCity extends Component {
         column: null,
         data: [],
         direction: null,
+        filter: null,
         selectedState: (window.localStorage.getItem("SelectedStateId")!==null)?window.localStorage.getItem("SelectedStateId") : "UP",
         selectedStateName : (window.localStorage.getItem("SelectedStateName")!==null)?window.localStorage.getItem("SelectedStateName") : "Uttar Pradesh"
     }
+    handleSearch(value){
+        console.log(value)
+        this.setState({
+            filter : value
+        })
+    }
+
     handleStateChange = (e, { value }) => {
         var selected = this.props.trackerstatedata.filter((val) => {
             return value === val.name
@@ -28,6 +37,11 @@ class TrackerDataCity extends Component {
                         column: null, direction: null
                      })
     }
+    handleRates(change,total){
+        var rate = (change/total)*100;
+        return (Math.round((rate + Number.EPSILON) * 100) / 100) + " %"
+    }
+
     handleSort = (clickedColumn) => () => {
         if(this.props.fromHome) return;
         const { column, direction } = this.state
@@ -91,7 +105,7 @@ class TrackerDataCity extends Component {
 
     render(){
         const { trackerstatedata,trackerstatecitydata, fromHome } = this.props;
-        const { column, data, direction } = this.state;
+        const { column, data, direction, filter } = this.state;
         var states = trackerstatedata.filter((value)=> {
             return {id: value.statecode, state: value.name}
         })
@@ -112,9 +126,14 @@ class TrackerDataCity extends Component {
                 })
             }
         }
+        if(filter !== null){
+            citydata = citydata.filter((value)=> {
+                return value.name === filter
+            })
+        }
         return(
             <Grid style={{padding: '0 20px'}}>
-                <Grid.Row stretched>
+                <Grid.Row>
                 <Grid.Column width={fromHome?16:12}>
                     <Segment>
                         <Label as='a' color='blue' ribbon>City Wise Data</Label>
@@ -177,7 +196,26 @@ class TrackerDataCity extends Component {
                 </Grid.Column>
                 { !fromHome &&
                 <Grid.Column width={4}>
-                    <Segment>Search City</Segment>
+                    <Segment>
+                        <Label as='a' color='green' ribbon>Search City</Label>
+                        <Segment textAlign="center" basic>
+                            <SearchState statedata={citydata} handleSearch={this.handleSearch.bind(this)}/>
+                        </Segment>
+                    </Segment>
+                    {filter!==null && 
+                    <Segment>
+                        <Label as='a' color='orange' ribbon>Percentages</Label>
+                        <Segment textAlign="center" basic>
+                            <Statistic color="green" size="tiny">
+                                    <Statistic.Value>{this.handleRates(citydata[0].recovered,citydata[0].confirmed)}</Statistic.Value>
+                                    <Label color='green' horizontal>RECOVERY RATE</Label>
+                            </Statistic><br/>
+                            <Statistic color="red" size="mini">
+                                    <Statistic.Value>{this.handleRates(citydata[0].deaths,citydata[0].confirmed)}</Statistic.Value>
+                                    <Label size="mini" color='red' horizontal>DEATH RATE</Label>
+                            </Statistic>
+                        </Segment>
+                    </Segment>}
                 </Grid.Column>
                 }
                 </Grid.Row>

@@ -188,7 +188,7 @@ public class ImportDataFromThirdParty{
 	}
 
 	//@Scheduled(fixedRate = 86400000)
-	@Scheduled(cron = "0 0 4 1/1 * ?")
+	@Scheduled(cron = "0 0 4 1/1 * ?") 
     public void RunSchedular() throws RestClientException, Exception{
     	this.getData();
     }

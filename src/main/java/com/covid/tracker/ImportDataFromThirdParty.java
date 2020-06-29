@@ -2,7 +2,6 @@ package com.covid.tracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -12,16 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatcher;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,7 +33,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 
 @PropertySource("classpath:application.properties")
-@Component
 public class ImportDataFromThirdParty{
     private static final String COUNTRY_API_URL = "https://api.covidindiatracker.com/total.json";
     private static final String STATE_API_URL = "https://api.covidindiatracker.com/state_data.json";
@@ -106,7 +98,8 @@ public class ImportDataFromThirdParty{
  		 logger.info("City Data saved : "+citySave);
          
          Date date = new Date();
-         return "ImportDataFromThirdParty ran at: " + date.toString(); 
+         logger.info("ImportDataFromThirdParty ran at: " + date.toString());
+         return "{ \"found\": \"true\"}";
     }
     
     private Boolean SaveCityData(List<CityDataMapper> cityList) {
@@ -187,7 +180,7 @@ public class ImportDataFromThirdParty{
 		return true;
 	}
 
-	@Scheduled(fixedRate = 86400000) 
+	//@Scheduled(fixedRate = 86400000) 
 	//@Scheduled(cron = "0 0 4 1/1 * ?") 
     public void RunSchedular() throws RestClientException, Exception{
     	this.getData();

@@ -28,7 +28,7 @@ class TrackerDataAll extends Component {
         const {trackerstatedata} = this.props;
         var sorteddata = [];
         var sortedstatelist = [];
-        console.log(trackerstatedata);
+        // console.log(trackerstatedata);
         if( trackerstatedata!== null && trackerstatedata  !== undefined) {
             sorteddata = trackerstatedata.sort((a,b)=>{
                 return a.confirmed < b.confirmed
@@ -37,7 +37,7 @@ class TrackerDataAll extends Component {
                 return index < 5
             })
         }
-        console.log(sortedstatelist)
+        // console.log(sortedstatelist)
         return sortedstatelist;
     }
 
@@ -122,7 +122,7 @@ class TrackerDataAll extends Component {
         )
         }else{
             return(
-                <Segment loading="true">
+                <Segment loading={true}>
 
                 </Segment>
             )

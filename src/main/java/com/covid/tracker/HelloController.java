@@ -5,37 +5,47 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
+
+import com.covid.tracker.model.CountryData;
+import com.covid.tracker.repository.CountryRepository;
  
 @RestController
 public class HelloController {
+	
+	
     @GetMapping("/api/hello")
     public String hello() {
         return "Covid Tracker, the time at the server is now " + new Date() + "\n";
     }
     
     @Autowired
-    RestTemplate restTemplate;
+	private CountryRepository countryRepository;
+    @Autowired
+    private ImportDataFromThirdParty dataFetcher;
     
     @RequestMapping(value = "/api/thirdparty")
-    public String getTPcontent() {
-       HttpHeaders headers = new HttpHeaders();
-       headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-       HttpEntity <String> entity = new HttpEntity<String>(headers);
-       
-       return restTemplate.exchange("https://api.covid19india.org/v2/state_district_wise.json", 
-    		   HttpMethod.GET, entity, String.class).getBody();
+    public String fetchTPcontent() throws RestClientException, Exception {
+       //check if data with current date is found; if no then fetch data with current date else return with updated status.
+    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(df.parse(df.format(new Date())));
+		List<CountryData> listCountry = countryRepository.findByCreatedAtGreaterThan(cal.getTime());
+		if(listCountry.size() > 0) {
+			return "{ \"found\": \"true\"}";
+		} else {
+	    	return dataFetcher.getData();
+		}
     }
     
     @RequestMapping(value = "/api/countrydata")

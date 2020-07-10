@@ -1,3 +1,10 @@
+@media screen and (max-width: 600px) {
+    .login-box, .signup-box{
+        width: 100% !important;
+    }
+
+}
+
 .login-box{
     width: 30%;
     height: 85%;    

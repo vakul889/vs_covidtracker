@@ -37,7 +37,7 @@ export default function Globalpage({children,...props}) {
                     <h1>COVID-19 TRACKER - INDIA</h1>
                   </Grid.Column>
                   <Grid.Column width={4}>
-                    <div style={{display: "flex", justifyContent: "flex-end"}}>
+                    <div className="user-control">
                       <h4 style={{padding: '10px', margin:0}}>{user}</h4>
                       <a href="/Authenticate" onClick={signout}><Button>Signout</Button></a>
                     </div>

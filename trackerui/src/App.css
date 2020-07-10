@@ -9,3 +9,16 @@
   background-attachment: fixed;
   background-position: center;
 }
+
+@media screen and (min-width: 480px){
+  .user-control{
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (max-width: 480px){
+  body{
+    font-size: 12px !important;
+  }
+}

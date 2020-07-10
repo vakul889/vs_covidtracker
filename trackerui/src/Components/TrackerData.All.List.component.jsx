@@ -45,7 +45,7 @@ class TrackerDataAll extends Component {
         const { trackerdata } = this.props;
         if(trackerdata[0] !== undefined && trackerdata[0] !== null ){
         return(
-            <Grid style={{padding: '0 20px'}}>
+            <Grid style={{padding: '0 20px'}} stackable>
                 <Grid.Row stretched>
                 <Grid.Column width={8}>
                     <Segment>

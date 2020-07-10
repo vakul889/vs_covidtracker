@@ -104,9 +104,21 @@ class TrackerDataState extends Component {
         }
         return(
             <>
-            <Grid style={{padding: '0 20px'}}>
+            <Grid style={{padding: '0 20px'}} stackable>
+            { !fromHome &&
+                <Grid.Row>
+                <Grid.Column>
+                    <Segment compact>
+                        <Label as='a' color='green' ribbon>Search State</Label>
+                        <Segment textAlign="center" basic>
+                            <SearchState statedata={maindata} handleSearch={this.handleSearch.bind(this)}/>
+                        </Segment>
+                    </Segment>
+                </Grid.Column>
+                </Grid.Row>
+                }
                 <Grid.Row stretched={filter!==null?true:false}>
-                <Grid.Column width={fromHome?16:12}>
+                <Grid.Column>
                     <Segment>
                         <Label as='a' color='blue' ribbon>State Wise Data</Label>
                         <Table sortable={!fromHome} celled fixed compact>
@@ -159,32 +171,22 @@ class TrackerDataState extends Component {
                         {fromHome && <Container textAlign="center">
                             <Link to="/CovidTracker/ByState"><Label attached="bottom">Show More</Label></Link>
                             </Container>}
+                        {filter!==null && 
+                        <Segment>
+                            <Label as='a' color='orange' ribbon>Percentages</Label>
+                            <Segment textAlign="center" basic>
+                                <Statistic color="green" size="tiny">
+                                        <Statistic.Value>{this.handleRates(maindata[0].recovered,maindata[0].confirmed)}</Statistic.Value>
+                                        <Label color='green' horizontal>RECOVERY RATE</Label>
+                                </Statistic><br/>
+                                <Statistic color="red" size="mini">
+                                        <Statistic.Value>{this.handleRates(maindata[0].deaths,maindata[0].confirmed)}</Statistic.Value>
+                                        <Label size="mini" color='red' horizontal>DEATH RATE</Label>
+                                </Statistic>
+                            </Segment>
+                        </Segment>}
                     </Segment>
                 </Grid.Column>
-                { !fromHome &&
-                <Grid.Column width={4}>
-                    <Segment>
-                        <Label as='a' color='green' ribbon>Search State</Label>
-                        <Segment textAlign="center" basic>
-                            <SearchState statedata={maindata} handleSearch={this.handleSearch.bind(this)}/>
-                        </Segment>
-                    </Segment>
-                    {filter!==null && 
-                    <Segment>
-                        <Label as='a' color='orange' ribbon>Percentages</Label>
-                        <Segment textAlign="center" basic>
-                            <Statistic color="green" size="tiny">
-                                    <Statistic.Value>{this.handleRates(maindata[0].recovered,maindata[0].confirmed)}</Statistic.Value>
-                                    <Label color='green' horizontal>RECOVERY RATE</Label>
-                            </Statistic><br/>
-                            <Statistic color="red" size="mini">
-                                    <Statistic.Value>{this.handleRates(maindata[0].deaths,maindata[0].confirmed)}</Statistic.Value>
-                                    <Label size="mini" color='red' horizontal>DEATH RATE</Label>
-                            </Statistic>
-                        </Segment>
-                    </Segment>}
-                </Grid.Column>
-                }
                 </Grid.Row>
             </Grid>
             </>
